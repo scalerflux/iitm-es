@@ -28,6 +28,7 @@ import {
 
   getWeekCompletion,
 } from './utils'
+import { OFFICIAL_ACADEMICS_URL, PROGRAM_LEVELS, getProgramLevelById } from './programStructure'
 
 const STORAGE_KEY = 'study-pulse-v1'
 
@@ -621,30 +622,6 @@ function ArchivedUpcomingDeadlineItem({ item, onUndo }) {
   )
 }
 
-const PROGRAM_LEVELS = [
-  {
-    id: 'foundation',
-    label: 'Foundation',
-    icon: '🧱',
-    tag: '43 credits · 9 Theory + 5 Labs',
-    description: 'Core courses that prepare you for advanced levels. Includes English, Math, Circuits, C Programming, Digital Systems, and labs.',
-  },
-  {
-    id: 'diploma',
-    label: 'Diploma',
-    icon: '📐',
-    tag: '43 credits · 8 Theory + 3 Labs + 2 Projects',
-    description: 'Signals & Systems, Python, Analog & Digital electronics, Sensors, DSP, and project courses.',
-  },
-  {
-    id: 'degree',
-    label: 'BS Degree',
-    icon: '🎓',
-    tag: '56 credits · 12 Courses + 1 Lab',
-    description: 'Control Engineering, EMF, Product Design, Embedded Linux, FPGAs, plus department and open electives.',
-  },
-]
-
 function SetupWizardPage({
   courses,
   termPacks,
@@ -664,13 +641,23 @@ function SetupWizardPage({
   const [direction, setDirection] = useState('forward')
   const [isLaunching, setIsLaunching] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState('foundation')
-  const selectedCount = selectedCourseIds.length
   const selectedPack = getTermPackById(selectedTermPackId) ?? termPacks[0]
   const totalSteps = 5
 
-  // Derive available levels from current term pack courses
   const availableLevels = [...new Set(courses.map((c) => c.level || 'foundation'))]
+  const selectedLevelDetails = getProgramLevelById(selectedLevel)
   const filteredCourses = courses.filter((c) => (c.level || 'foundation') === selectedLevel)
+  const filteredCourseIds = filteredCourses.map((course) => course.id)
+  const selectedLevelCount = selectedCourseIds.filter((courseId) => filteredCourseIds.includes(courseId)).length
+  const totalSelectedCount = selectedCourseIds.length
+
+  useEffect(() => {
+    const courseLevels = [...new Set(courses.map((course) => course.level || 'foundation'))]
+
+    if (!courseLevels.includes(selectedLevel) && courseLevels.length) {
+      setSelectedLevel(courseLevels[0])
+    }
+  }, [courses, selectedLevel])
 
   function goNext() {
     if (step < totalSteps - 1) {
@@ -687,7 +674,7 @@ function SetupWizardPage({
   }
 
   function handleLaunch() {
-    if (!selectedCount) return
+    if (!selectedLevelCount) return
     setIsLaunching(true)
     setTimeout(() => onSubmit(), 2200)
   }
@@ -706,7 +693,7 @@ function SetupWizardPage({
         <div className="setup-launch-content">
           <div className="setup-launch-ring" />
           <h2>Preparing your dashboard</h2>
-          <p>{selectedCount} course{selectedCount === 1 ? '' : 's'} · Week {selectedWeek} · {selectedPack?.label}</p>
+          <p>{selectedLevelCount} course{selectedLevelCount === 1 ? '' : 's'} · Week {selectedWeek} · {selectedPack?.label}</p>
           <div className="setup-launch-bar">
             <span className="setup-launch-bar__fill" />
           </div>
@@ -835,9 +822,8 @@ function SetupWizardPage({
                       className={
                         'level-card' +
                         (isActive ? ' level-card--active' : '') +
-                        (!isAvailable ? ' level-card--disabled' : '')
+                        (!isAvailable ? ' level-card--unavailable' : '')
                       }
-                      disabled={!isAvailable}
                       onClick={() => setSelectedLevel(level.id)}
                       style={{ '--i': i }}
                       type="button"
@@ -854,6 +840,82 @@ function SetupWizardPage({
                   )
                 })}
               </div>
+
+              <div className="level-detail-panel">
+                <div className="level-detail-panel__header">
+                  <div>
+                    <p className="section-kicker">Official academic structure</p>
+                    <h3>{selectedLevelDetails.label}</h3>
+                  </div>
+                  <a className="ghost-toggle ghost-toggle--compact" href={OFFICIAL_ACADEMICS_URL} rel="noreferrer" target="_blank">
+                    Open IITM source
+                  </a>
+                </div>
+
+                <div className="level-detail-grid">
+                  <div className="level-detail-stat">
+                    <span>Credits</span>
+                    <strong>{selectedLevelDetails.tag}</strong>
+                  </div>
+                  <div className="level-detail-stat">
+                    <span>Duration</span>
+                    <strong>{selectedLevelDetails.duration}</strong>
+                  </div>
+                  <div className="level-detail-stat">
+                    <span>Weekly commitment</span>
+                    <strong>{selectedLevelDetails.weeklyCommitment}</strong>
+                  </div>
+                  <div className="level-detail-stat">
+                    <span>Programme fee</span>
+                    <strong>{selectedLevelDetails.fee}</strong>
+                  </div>
+                </div>
+
+                <div className="summary-grid">
+                  <div className="summary-block">
+                    <span>Exit award</span>
+                    <p className="muted-copy">{selectedLevelDetails.exitAward}</p>
+                  </div>
+                  <div className="summary-block">
+                    <span>Progression</span>
+                    <p className="muted-copy">{selectedLevelDetails.progression}</p>
+                  </div>
+                </div>
+
+                {selectedLevelDetails.note ? (
+                  <p className="level-detail-note">{selectedLevelDetails.note}</p>
+                ) : null}
+
+                <div className="level-course-groups">
+                  {selectedLevelDetails.courseGroups.map((group) => (
+                    <article key={group.id} className="level-course-group">
+                      <div className="level-course-group__header">
+                        <div>
+                          <strong>{group.label}</strong>
+                          <small>{group.selectionRule}</small>
+                        </div>
+                        <span>{group.courses.length} course{group.courses.length === 1 ? '' : 's'}</span>
+                      </div>
+
+                      <div className="level-course-list">
+                        {group.courses.map((course) => (
+                          <div key={`${group.id}-${course.code}`} className="level-course-item">
+                            <div>
+                              <strong>{course.code}</strong>
+                              <p>{course.name}</p>
+                            </div>
+                            <small>
+                              {course.credits} cr
+                              {course.prerequisites ? ` · Pre: ${course.prerequisites}` : ''}
+                              {course.corequisites ? ` · Co: ${course.corequisites}` : ''}
+                            </small>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
             </section>
           )}
 
@@ -868,7 +930,7 @@ function SetupWizardPage({
                     Toggle the ones you&apos;re taking. You can change this later from Course Setup.
                   </p>
                 </div>
-                <span className="today-chip">{selectedCount} selected</span>
+                <span className="today-chip">{selectedLevelCount} selected</span>
               </div>
 
               <div className="setup-course-grid">
@@ -894,7 +956,7 @@ function SetupWizardPage({
                 })}
                 {filteredCourses.length === 0 && (
                   <p className="muted-copy" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem 0' }}>
-                    No courses found for this level in the selected term pack.
+                    No trackable courses are bundled for this level in the selected term pack yet. Import a Diploma or Degree pack JSON to track this level locally.
                   </p>
                 )}
               </div>
@@ -926,9 +988,10 @@ function SetupWizardPage({
                 <div className="summary-block">
                   <span>Ready state</span>
                   <ul className="summary-list">
-                    <li>{selectedCount} course{selectedCount === 1 ? '' : 's'} will be shown across the app.</li>
+                    <li>{selectedLevelCount} course{selectedLevelCount === 1 ? '' : 's'} from this level will be shown across the app.</li>
                     <li>Level: {PROGRAM_LEVELS.find((l) => l.id === selectedLevel)?.label ?? selectedLevel}</li>
                     <li>The weekly board will open with Week {selectedWeek} selected.</li>
+                    <li>Total selected across the pack: {totalSelectedCount}.</li>
                     <li>You can rerun setup later from Course Setup.</li>
                   </ul>
                 </div>
@@ -969,7 +1032,7 @@ function SetupWizardPage({
         ) : (
           <button
             className="deadline-action"
-            disabled={!selectedCount}
+            disabled={!selectedLevelCount}
             onClick={handleLaunch}
             type="button"
           >

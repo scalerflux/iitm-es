@@ -30,6 +30,7 @@ StudyPulse is a **NOC War Room**–styled dashboard built for students of the II
 | Feature | Description |
 |---|---|
 | 🧙 **Interactive Setup Wizard** | 5-step guided onboarding — pick your term, level (Foundation/Diploma/Degree), courses, and week focus |
+| 🏛️ **Official Level Catalog** | Foundation, Diploma, and Degree structure now surface official IITM credits, fees, progression, and course lists inside the wizard |
 | 📊 **Dashboard** | At-a-glance view of all course progress, upcoming deadlines, and term calendar |
 | 📅 **Weekly View** | Week-by-week execution board with checklist items per course |
 | 🎓 **Grade Simulator** | Enter scores and see projected grades with eligibility checks |
@@ -106,6 +107,8 @@ src/
 - [IITM ES Academics](https://study.iitm.ac.in/es/academics.html)
 - [Jan 2026 Grading Document](https://docs.google.com/document/d/e/2PACX-1vTFhsEQkgismKJq5Ey_172lv7MJ8STdeSPbn3Jw4PEwwEo0b4q6J841DQCQWKazcEw47XrYFO9fBTEp/pub)
 - [Program Structure](https://docs.google.com/document/d/1DC9QAwtN2KMacntPDjkA0PSrFyC0PUlf/pub)
+
+The built-in wizard now uses the official IITM academics page for level metadata. As of March 28, 2026, the Degree section text says there are 9 department electives, while 8 named department electives are listed on the page.
 
 ---
 
