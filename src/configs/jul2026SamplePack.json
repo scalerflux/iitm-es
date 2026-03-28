@@ -1,0 +1,192 @@
+{
+  "id": "jul-2026-sample-pack",
+  "label": "Jul 2026 · Sample Pack",
+  "term": {
+    "level": "Foundation Term 3",
+    "term": "Jul 2026",
+    "startDate": "2026-07-06",
+    "totalWeeks": 12
+  },
+  "deadlineWindowDays": 7,
+  "courses": [
+    {
+      "id": "sample-circuits",
+      "code": "EE1201",
+      "shortName": "Circuits II",
+      "name": "Electrical Circuits II",
+      "accent": "#78e6ff",
+      "type": "theory",
+      "weeklyItems": ["Lectures", "Tutorial"],
+      "weeklyPlan": [
+        { "item": "GA", "weeks": [1, 2, 3, 4, 5, 6, 7] }
+      ],
+      "customTrackers": [],
+      "sessions": {
+        "monday": ["5:30 PM - 6:30 PM Live Session"],
+        "wednesday": ["5:30 PM - 7:30 PM Live Session"],
+        "friday": ["11:00 AM - 12:00 PM TA Session"]
+      },
+      "milestones": [
+        { "id": "ga-w1", "label": "Week 1 assignment deadline", "date": "2026-07-15", "kind": "deadline" },
+        { "id": "ga-w2", "label": "Week 2 assignment deadline", "date": "2026-07-22", "kind": "deadline" },
+        { "id": "ga-w3", "label": "Week 3 assignment deadline", "date": "2026-07-29", "kind": "deadline" },
+        { "id": "ga-w4", "label": "Week 4 assignment deadline", "date": "2026-08-05", "kind": "deadline" },
+        { "id": "quiz-1", "label": "Quiz 1", "date": "2026-08-09", "kind": "exam" },
+        { "id": "quiz-2", "label": "Quiz 2", "date": "2026-09-06", "kind": "exam" },
+        { "id": "final", "label": "End Term Exam", "date": "2026-09-28", "kind": "exam" }
+      ],
+      "scoreFields": [
+        { "key": "q1", "label": "Quiz 1", "min": 0, "max": 100, "step": 1 },
+        { "key": "q2", "label": "Quiz 2", "min": 0, "max": 100, "step": 1 },
+        { "key": "final", "label": "Final", "min": 0, "max": 100, "step": 1 },
+        { "key": "ga1", "label": "GA 1", "min": 0, "max": 100, "step": 1 },
+        { "key": "ga2", "label": "GA 2", "min": 0, "max": 100, "step": 1 },
+        { "key": "ga3", "label": "GA 3", "min": 0, "max": 100, "step": 1 },
+        { "key": "ga4", "label": "GA 4", "min": 0, "max": 100, "step": 1 },
+        { "key": "ga5", "label": "GA 5", "min": 0, "max": 100, "step": 1 },
+        { "key": "ga6", "label": "GA 6", "min": 0, "max": 100, "step": 1 },
+        { "key": "ga7", "label": "GA 7", "min": 0, "max": 100, "step": 1 }
+      ],
+      "scenarioFields": ["q2", "final"],
+      "grading": {
+        "calculator": "foundationTheory",
+        "params": {
+          "quizWeightsPrimary": {
+            "finalWeight": 0.6,
+            "bestQuizWeight": 0.3
+          },
+          "quizWeightsSecondary": {
+            "finalWeight": 0.45,
+            "quiz1Weight": 0.25,
+            "quiz2Weight": 0.3
+          },
+          "eligibility": {
+            "assignmentKeys": ["ga1", "ga2", "ga3", "ga4", "ga5", "ga6", "ga7"],
+            "bestCount": 5,
+            "threshold": 40,
+            "quizKeys": ["q1", "q2"]
+          }
+        }
+      }
+    },
+    {
+      "id": "sample-linux",
+      "code": "CS1202",
+      "shortName": "Linux II",
+      "name": "Introduction to Linux Programming II",
+      "accent": "#7ef2ba",
+      "type": "theory",
+      "weeklyItems": ["Lectures"],
+      "weeklyPlan": [
+        { "item": "GA", "weeks": [1, 2, 3, 4, 5, 6, 7] },
+        { "item": "BPT", "weeks": [3, 5, 7, 10] }
+      ],
+      "customTrackers": [],
+      "sessions": {
+        "tuesday": ["8:00 PM - 9:00 PM Live Session"],
+        "thursday": ["8:00 PM - 10:00 PM TA Session"],
+        "saturday": ["2:00 PM - 4:00 PM Lab Meeting"]
+      },
+      "milestones": [
+        { "id": "bpt1", "label": "BPT-1 released", "date": "2026-07-17", "kind": "release" },
+        { "id": "bpt1-deadline", "label": "BPT-1 deadline", "date": "2026-07-26", "kind": "deadline" },
+        { "id": "bpt2", "label": "BPT-2 released", "date": "2026-08-07", "kind": "release" },
+        { "id": "bpt2-deadline", "label": "BPT-2 deadline", "date": "2026-08-16", "kind": "deadline" },
+        { "id": "quiz-1", "label": "Quiz 1", "date": "2026-08-09", "kind": "exam" },
+        { "id": "oppe", "label": "OPPE", "date": "2026-09-12", "kind": "exam" },
+        { "id": "final", "label": "End Term Exam", "date": "2026-09-28", "kind": "exam" }
+      ],
+      "scoreFields": [
+        { "key": "q1", "label": "Quiz 1", "min": 0, "max": 100, "step": 1 },
+        {
+          "key": "oppeSct",
+          "label": "OPPE SCT",
+          "type": "select",
+          "options": [
+            { "value": "", "label": "Select status" },
+            { "value": "1", "label": "Completed" },
+            { "value": "0", "label": "Not completed" }
+          ]
+        },
+        { "key": "oppe", "label": "OPPE", "min": 0, "max": 100, "step": 1 },
+        { "key": "final", "label": "Final", "min": 0, "max": 100, "step": 1 },
+        { "key": "vmt", "label": "VMT", "min": 0, "max": 100, "step": 1 },
+        { "key": "nppe", "label": "NPPE", "min": 0, "max": 100, "step": 1 },
+        { "key": "bpt1", "label": "BPT 1", "min": 0, "max": 100, "step": 1 },
+        { "key": "bpt2", "label": "BPT 2", "min": 0, "max": 100, "step": 1 },
+        { "key": "bpt3", "label": "BPT 3", "min": 0, "max": 100, "step": 1 },
+        { "key": "bpt4", "label": "BPT 4", "min": 0, "max": 100, "step": 1 }
+      ],
+      "scenarioFields": ["oppe", "final"],
+      "grading": {
+        "calculator": "linuxTheory",
+        "params": {
+          "bptKeys": ["bpt1", "bpt2", "bpt3", "bpt4"],
+          "firstThreeBptKeys": ["bpt1", "bpt2", "bpt3"],
+          "weights": {
+            "q1": 0.25,
+            "oppe": 0.25,
+            "final": 0.35,
+            "bptAverage": 0.05,
+            "vmt": 0.05,
+            "nppe": 0.05
+          },
+          "eligibility": {
+            "sctKey": "oppeSct",
+            "oppeKey": "oppe",
+            "finalKey": "final",
+            "threshold": 40
+          }
+        }
+      }
+    },
+    {
+      "id": "sample-lab",
+      "code": "EE2202",
+      "shortName": "Lab II",
+      "name": "Electronics Lab II",
+      "accent": "#ffd166",
+      "type": "lab",
+      "weeklyItems": ["Lab Assignment"],
+      "weeklyPlan": [],
+      "customTrackers": [],
+      "sessions": {},
+      "milestones": [
+        { "id": "ol1", "label": "Online Lab 1 deadline", "date": "2026-07-20", "kind": "deadline" },
+        { "id": "ol2", "label": "Online Lab 2 deadline", "date": "2026-07-27", "kind": "deadline" },
+        { "id": "ol3", "label": "Online Lab 3 deadline", "date": "2026-08-10", "kind": "deadline" },
+        { "id": "ol4", "label": "Online Lab 4 deadline", "date": "2026-08-17", "kind": "deadline" },
+        { "id": "ol5", "label": "Online Lab 5 deadline", "date": "2026-08-24", "kind": "deadline" },
+        { "id": "ol6", "label": "Online Lab 6 deadline", "date": "2026-08-31", "kind": "deadline" },
+        { "id": "ol7", "label": "Online Lab 7 deadline", "date": "2026-09-07", "kind": "deadline" },
+        { "id": "ol8", "label": "Online Lab 8 deadline", "date": "2026-09-14", "kind": "deadline" },
+        { "id": "in-campus-slot-1", "label": "In-Campus Lab Slot 1", "date": "2026-10-03", "kind": "exam" }
+      ],
+      "scoreFields": [
+        { "key": "ol1", "label": "OL 1", "min": 0, "max": 100, "step": 1 },
+        { "key": "ol2", "label": "OL 2", "min": 0, "max": 100, "step": 1 },
+        { "key": "ol3", "label": "OL 3", "min": 0, "max": 100, "step": 1 },
+        { "key": "ol4", "label": "OL 4", "min": 0, "max": 100, "step": 1 },
+        { "key": "ol5", "label": "OL 5", "min": 0, "max": 100, "step": 1 },
+        { "key": "ol6", "label": "OL 6", "min": 0, "max": 100, "step": 1 },
+        { "key": "ol7", "label": "OL 7", "min": 0, "max": 100, "step": 1 },
+        { "key": "ol8", "label": "OL 8", "min": 0, "max": 100, "step": 1 },
+        { "key": "il", "label": "In-Campus Lab", "min": 0, "max": 100, "step": 1 }
+      ],
+      "scenarioFields": ["il"],
+      "grading": {
+        "calculator": "electronicsLab",
+        "params": {
+          "onlineKeys": ["ol1", "ol2", "ol3", "ol4", "ol5", "ol6", "ol7", "ol8"],
+          "inPersonKey": "il",
+          "onlineWeight": 0.4,
+          "inPersonWeight": 0.6,
+          "eligibility": {
+            "bestCount": 6,
+            "threshold": 40
+          }
+        }
+      }
+    }
+  ]
+}
