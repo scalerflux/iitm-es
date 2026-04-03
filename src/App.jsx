@@ -92,9 +92,9 @@ function normalizeScoreFields(value) {
         type: 'select',
         options: Array.isArray(field.options)
           ? field.options.filter(isPlainObject).map((option) => ({
-              value: String(option.value ?? ''),
-              label: String(option.label ?? '').trim(),
-            }))
+            value: String(option.value ?? ''),
+            label: String(option.label ?? '').trim(),
+          }))
           : [],
       }
     }
@@ -303,8 +303,8 @@ function formatWeeklyFlow(course) {
   const base = course.weeklyItems.length ? `Base: ${course.weeklyItems.join(', ')}` : 'Base: none'
   const dynamic = (course.weeklyPlan ?? []).length
     ? `Dynamic: ${(course.weeklyPlan ?? [])
-        .map((entry) => `${entry.item} (${formatWeekRangeLabel(entry.weeks)})`)
-        .join(', ')}`
+      .map((entry) => `${entry.item} (${formatWeekRangeLabel(entry.weeks)})`)
+      .join(', ')}`
     : 'Dynamic: none'
 
   return `${base}\n${dynamic}`
@@ -461,30 +461,9 @@ function getFieldLabel(course, key) {
   return course.scoreFields.find((field) => field.key === key)?.label ?? key.toUpperCase()
 }
 
-function SessionTrackerItem({ session, watched, onToggle }) {
-  const [isExiting, setIsExiting] = useState(false)
-
-  function handleChange() {
-    if (!watched) {
-      setIsExiting(true)
-      window.setTimeout(() => {
-        onToggle(session.id)
-        setIsExiting(false)
-      }, 260)
-      return
-    }
-
-    onToggle(session.id)
-  }
-
+function SessionTrackerItem({ session }) {
   return (
-    <label className={isExiting ? 'session-item session-item--exit' : 'session-item'}>
-      <input
-        checked={watched}
-        className="session-checkbox"
-        onChange={handleChange}
-        type="checkbox"
-      />
+    <div className="session-item">
       <div className="session-item__body">
         <div className="session-item__meta">
           <span style={{ color: session.accent }}>{session.course}</span>
@@ -495,7 +474,7 @@ function SessionTrackerItem({ session, watched, onToggle }) {
         </div>
         <strong>{session.session}</strong>
       </div>
-    </label>
+    </div>
   )
 }
 
@@ -642,7 +621,7 @@ function SetupWizardPage({
   const [isLaunching, setIsLaunching] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState('foundation')
   const selectedPack = getTermPackById(selectedTermPackId) ?? termPacks[0]
-  const totalSteps = 5
+  const totalSteps = 3
 
   const availableLevels = [...new Set(courses.map((c) => c.level || 'foundation'))]
   const selectedLevelDetails = getProgramLevelById(selectedLevel)
@@ -682,10 +661,13 @@ function SetupWizardPage({
   function handleFileChange(event) {
     const file = event.target.files?.[0]
     event.target.value = ''
-    if (file) onImportTermPack(file)
+
+    if (file) {
+      onImportTermPack(file)
+    }
   }
 
-  const stepLabels = ['Welcome', 'Term Pack', 'Level', 'Courses', 'Launch']
+  const stepLabels = ['Welcome', 'Level', 'Courses']
 
   if (isLaunching) {
     return (
@@ -741,7 +723,7 @@ function SetupWizardPage({
               <p className="section-kicker">StudyPulse</p>
               <h2>Welcome to your IITM BS Progress Tracker</h2>
               <p className="muted-copy">
-                Set up your dashboard — pick your term, choose your level, select courses, and set your week focus.
+                Set up your dashboard — choose your level, select courses, and launch.
                 Everything updates in real time.
               </p>
               <div className="setup-pack-card">
@@ -749,20 +731,6 @@ function SetupWizardPage({
                 <strong>{selectedPack?.label ?? 'Unknown pack'}</strong>
                 <small>{TERM.level} · {TERM.term}</small>
               </div>
-              <button className="wizard-cta" onClick={goNext} type="button">
-                Get started
-                <span className="wizard-cta__arrow">→</span>
-              </button>
-            </section>
-          )}
-
-          {step === 1 && (
-            <section className="wizard-panel">
-              <p className="section-kicker">Step 1 of 4</p>
-              <h2>Choose your term pack</h2>
-              <p className="muted-copy">
-                Select the term you&apos;re enrolled in. You can also import a custom pack JSON.
-              </p>
 
               <div className="setup-import-panel">
                 <input
@@ -800,12 +768,17 @@ function SetupWizardPage({
                   </button>
                 ))}
               </div>
+
+              <button className="wizard-cta" onClick={goNext} type="button">
+                Get started
+                <span className="wizard-cta__arrow">→</span>
+              </button>
             </section>
           )}
 
-          {step === 2 && (
+          {step === 1 && (
             <section className="wizard-panel">
-              <p className="section-kicker">Step 2 of 4</p>
+              <p className="section-kicker">Step 1 of 2</p>
               <h2>Select your level</h2>
               <p className="muted-copy">
                 Pick the program level you&apos;re currently enrolled in. This filters which courses are shown next.
@@ -919,11 +892,11 @@ function SetupWizardPage({
             </section>
           )}
 
-          {step === 3 && (
+          {step === 2 && (
             <section className="wizard-panel">
               <div className="wizard-panel__header">
                 <div>
-                  <p className="section-kicker">Step 3 of 4</p>
+                  <p className="section-kicker">Step 2 of 2</p>
                   <h2>Select your courses</h2>
                   <p className="muted-copy">
                     Showing {PROGRAM_LEVELS.find((l) => l.id === selectedLevel)?.label ?? selectedLevel} courses.
@@ -956,43 +929,34 @@ function SetupWizardPage({
                 })}
                 {filteredCourses.length === 0 && (
                   <p className="muted-copy" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem 0' }}>
-                    No trackable courses are bundled for this level in the selected term pack yet. Import a Diploma or Degree pack JSON to track this level locally.
+                    No trackable courses are bundled for this level in the selected term pack yet.
                   </p>
                 )}
-              </div>
-            </section>
-          )}
-
-          {step === 4 && (
-            <section className="wizard-panel">
-              <p className="section-kicker">Step 4 of 4</p>
-              <h2>Choose your starting week</h2>
-              <p className="muted-copy">
-                This sets which week the execution board opens on. The current term week is auto-highlighted.
-              </p>
-
-              <div className="week-selector">
-                {Array.from({ length: TERM.totalWeeks }, (_, index) => index + 1).map((week) => (
-                  <button
-                    key={week}
-                    className={week === selectedWeek ? 'week-chip week-chip--active' : 'week-chip'}
-                    onClick={() => onSelectWeek(week)}
-                    type="button"
-                  >
-                    W{week}
-                  </button>
-                ))}
               </div>
 
               <div className="setup-summary">
                 <div className="summary-block">
+                  <span>Starting week</span>
+                  <div className="week-selector">
+                    {Array.from({ length: TERM.totalWeeks }, (_, index) => index + 1).map((week) => (
+                      <button
+                        key={week}
+                        className={week === selectedWeek ? 'week-chip week-chip--active' : 'week-chip'}
+                        onClick={() => onSelectWeek(week)}
+                        type="button"
+                      >
+                        W{week}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="summary-block">
                   <span>Ready state</span>
                   <ul className="summary-list">
                     <li>{selectedLevelCount} course{selectedLevelCount === 1 ? '' : 's'} from this level will be shown across the app.</li>
-                    <li>Level: {PROGRAM_LEVELS.find((l) => l.id === selectedLevel)?.label ?? selectedLevel}</li>
-                    <li>The weekly board will open with Week {selectedWeek} selected.</li>
                     <li>Total selected across the pack: {totalSelectedCount}.</li>
-                    <li>You can rerun setup later from Course Setup.</li>
+                    <li>The weekly board will open with Week {selectedWeek} selected.</li>
                   </ul>
                 </div>
               </div>
@@ -1266,7 +1230,7 @@ function DashboardPage({
         <div className="panel-header">
           <div>
             <p className="section-kicker">Sessions & recordings</p>
-            <h3>Tick off the sessions you watched live or as recordings</h3>
+            <h3>This week&apos;s live & TA sessions</h3>
           </div>
           {watchedSessionsCount ? (
             <button
@@ -1282,12 +1246,14 @@ function DashboardPage({
         {sessions.length ? (
           <div className="session-list">
             {sessions.map((session) => (
-              <SessionTrackerItem
-                key={session.id}
-                onToggle={onToggleSessionWatch}
-                session={session}
-                watched={Boolean(sessionWatchState[session.id])}
-              />
+              <label key={session.id} className="session-item">
+                <input
+                  checked={Boolean(sessionWatchState[session.id])}
+                  onChange={() => onToggleSessionWatch(session.id)}
+                  type="checkbox"
+                />
+                <SessionTrackerItem session={session} />
+              </label>
             ))}
           </div>
         ) : (
@@ -1701,7 +1667,17 @@ function App() {
   const [customTermPacks, setCustomTermPacks] = useState(bootState.customTermPacks)
   const [importStatus, setImportStatus] = useState('')
   const [importError, setImportError] = useState('')
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = window.localStorage.getItem('studypulse-dark-mode')
+    if (saved !== null) return saved === 'true'
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+  })
   const calendarEvents = getActiveTermPack().calendarEvents ?? []
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode)
+    window.localStorage.setItem('studypulse-dark-mode', String(darkMode))
+  }, [darkMode])
 
   useEffect(() => {
     const onHashChange = () => setCurrentRoute(getRoute())
@@ -1715,19 +1691,19 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem(
       STORAGE_KEY,
-        getStoragePayload(
-          courses,
-          weeklyState,
-          gradesState,
-          scenarioState,
-          selectedWeek,
-          deadlineState,
-          sessionWatchState,
-          setupState,
-          setupState.selectedTermPackId,
-          customTermPacks,
-        ),
-      )
+      getStoragePayload(
+        courses,
+        weeklyState,
+        gradesState,
+        scenarioState,
+        selectedWeek,
+        deadlineState,
+        sessionWatchState,
+        setupState,
+        setupState.selectedTermPackId,
+        customTermPacks,
+      ),
+    )
   }, [courses, weeklyState, gradesState, scenarioState, selectedWeek, deadlineState, sessionWatchState, setupState, customTermPacks])
 
   function handleToggleItem(courseId, week, item) {
@@ -1788,11 +1764,11 @@ function App() {
       current.map((course) =>
         course.id === courseId
           ? {
-              ...course,
-              milestones: course.milestones.map((milestone) =>
-                milestone.id === milestoneId ? { ...milestone, [key]: value } : milestone,
-              ),
-            }
+            ...course,
+            milestones: course.milestones.map((milestone) =>
+              milestone.id === milestoneId ? { ...milestone, [key]: value } : milestone,
+            ),
+          }
           : course,
       ),
     )
@@ -1955,7 +1931,12 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Sidebar activeCourseCount={activeCourses.length} route={route} />
+      <Sidebar
+        activeCourseCount={activeCourses.length}
+        darkMode={darkMode}
+        onToggleDarkMode={() => setDarkMode((d) => !d)}
+        route={route}
+      />
       <main className="main-panel">{page}</main>
     </div>
   )

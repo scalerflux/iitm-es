@@ -71,3 +71,32 @@ code,
 .grade-chip {
   font-family: var(--font-mono);
 }
+
+/* ══════════════════════════════════════
+   DARK MODE
+   ══════════════════════════════════════ */
+:root.dark {
+  --bg: #111111;
+  --bg-alt: #1A1A1A;
+  --surface: #1E1E1E;
+  --ink: #E8E8E8;
+  --ink-secondary: #BBBBBB;
+  --ink-muted: #888888;
+
+  --border: 3px solid #555;
+  --border-thin: 2px solid #555;
+  --shadow: 5px 5px 0 #000;
+  --shadow-sm: 3px 3px 0 #000;
+  --shadow-hover: 7px 7px 0 #000;
+
+  color-scheme: dark;
+}
+
+:root.dark body {
+  background: var(--bg);
+}
+
+:root.dark ::selection {
+  background: var(--pop-yellow);
+  color: #111;
+}

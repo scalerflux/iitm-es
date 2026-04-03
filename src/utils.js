@@ -1,7 +1,7 @@
 import { getDeadlineWindowDays, TERM } from './data'
 
 const DAY_MS = 24 * 60 * 60 * 1000
-const WEEK_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+const CALENDAR_DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 const MILESTONE_PRIORITY = { release: 0, deadline: 1, exam: 2, milestone: 3 }
 
 function getPhaseStateKey(itemId, phase) {
@@ -12,6 +12,13 @@ function getWeekStart(selectedWeek) {
   const start = new Date(`${TERM.startDate}T00:00:00`)
   start.setDate(start.getDate() + (selectedWeek - 1) * 7)
   return start
+}
+
+function getAcademicWeekDays(weekStart) {
+  const startDay = weekStart.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+  const startIndex = CALENDAR_DAYS.indexOf(startDay)
+
+  return Array.from({ length: 7 }, (_, index) => CALENDAR_DAYS[(startIndex + index) % CALENDAR_DAYS.length])
 }
 
 function toTitleCase(value) {
@@ -36,11 +43,13 @@ function average(values) {
 }
 
 function bestAverage(values, count) {
-  const valid = values.filter((value) => value !== null).sort((a, b) => b - a)
-  if (!valid.length) {
-    return null
+  // Unattempted assignments count as 0 per official policy
+  const normalized = values.map((value) => value ?? 0)
+  if (normalized.every((v) => v === 0) && values.every((v) => v === null)) {
+    return null // All unentered — truly no data
   }
-  return average(valid.slice(0, count))
+  const sorted = [...normalized].sort((a, b) => b - a)
+  return average(sorted.slice(0, count))
 }
 
 function averageFromKeys(values, keys) {
@@ -736,11 +745,12 @@ export function getWeeklySessions(courses, selectedWeek) {
   weekEnd.setDate(weekEnd.getDate() + 6)
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+  const academicWeekDays = getAcademicWeekDays(weekStart)
 
   return courses
     .flatMap((course) =>
       Object.entries(course.sessions ?? {}).flatMap(([day, entries]) => {
-        const dayIndex = WEEK_DAYS.indexOf(day)
+        const dayIndex = academicWeekDays.indexOf(day)
         if (dayIndex < 0) {
           return []
         }

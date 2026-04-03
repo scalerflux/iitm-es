@@ -183,6 +183,8 @@
 .main-panel {
   padding: 1.5rem;
   background: var(--bg);
+  overflow-y: auto;
+  height: 100vh;
 }
 
 .main-panel--setup {
@@ -193,6 +195,7 @@
 .content-grid {
   display: grid;
   gap: 1.2rem;
+  padding-bottom: 2rem;
 }
 
 /* ── Setup shell ── */
@@ -1075,6 +1078,28 @@
   transition: opacity 200ms ease;
 }
 
+.deadline-item__body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.deadline-item__body > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.deadline-item__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+}
+
 .deadline-item--done {
   opacity: 0.5;
 }
@@ -1149,10 +1174,18 @@
 }
 
 /* ── Session items ── */
+.session-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .session-item {
   display: flex;
   gap: 0.6rem;
   align-items: start;
+  padding: 0.5rem 0.6rem;
+  border: var(--border-thin);
+  background: var(--surface);
 }
 
 .session-item__body {
@@ -1172,25 +1205,6 @@
 .session-item__meta small {
   color: var(--ink-muted);
   font-size: 0.78rem;
-}
-
-.session-checkbox {
-  width: 1.2rem;
-  height: 1.2rem;
-  accent-color: var(--ink);
-  flex-shrink: 0;
-  margin-top: 0.2rem;
-}
-
-.session-item--exit {
-  padding: 0.7rem 0.85rem;
-  border: 1px dashed var(--ink-muted);
-  color: var(--ink-muted);
-}
-
-.deadline-item--exit {
-  border-style: dashed;
-  color: var(--ink-muted);
 }
 
 .deadline-archive {
@@ -1217,17 +1231,20 @@
 
 /* ── Deadline action (done/undo) ── */
 .deadline-action {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  padding: 0.3rem 0.8rem;
   border: var(--border-thin);
-  background: var(--surface);
+  background: var(--pop-green);
   color: var(--ink);
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
   transition: transform 100ms ease, box-shadow 100ms ease;
   box-shadow: 2px 2px 0 var(--ink);
 }
@@ -1236,7 +1253,6 @@
 .deadline-action:focus-visible {
   transform: translate(-1px, -1px);
   box-shadow: var(--shadow-sm);
-  background: var(--pop-green);
 }
 
 .deadline-action--undo {
@@ -1735,3 +1751,144 @@
   }
 }
 
+/* ══════════════════════════════════════
+   COURSE LEVEL GROUPS (wizard selector)
+   ══════════════════════════════════════ */
+.course-level-group {
+  margin-top: 1rem;
+}
+
+.course-level-group__title {
+  margin: 0 0 0.6rem;
+  padding: 0.4rem 0.8rem;
+  background: var(--bg-alt);
+  border: var(--border-thin);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Dark mode toggle ── */
+.dark-mode-toggle {
+  margin-top: auto;
+  padding: 0.6rem;
+  border: 2px solid rgba(255,255,255,0.2);
+  color: #fff;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: background 150ms ease;
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ══════════════════════════════════════
+   DARK MODE OVERRIDES
+   ══════════════════════════════════════ */
+:root.dark .sidebar {
+  background: #000;
+  border-color: #333;
+}
+
+:root.dark .card,
+:root.dark .hero-card {
+  background: var(--surface);
+  border-color: #555;
+  box-shadow: 5px 5px 0 #000;
+}
+
+:root.dark .card:hover,
+:root.dark .hero-card:hover {
+  box-shadow: 7px 7px 0 #000;
+}
+
+:root.dark .wizard-panel--welcome {
+  background: #2a2500;
+}
+
+:root.dark .setup-pack-card {
+  background: var(--surface);
+  border-color: #555;
+}
+
+:root.dark .wizard-cta {
+  background: var(--pop-yellow);
+  color: #111;
+}
+
+:root.dark .level-card--active {
+  background: #1a2a66;
+}
+
+:root.dark .setup-course-toggle--active {
+  background: #1a331a;
+}
+
+:root.dark .course-level-group__title {
+  background: var(--bg-alt);
+  border-color: #555;
+}
+
+/* Status badges dark mode */
+:root.dark .status-badge--ahead { background: #1a331a; color: #66cc77; }
+:root.dark .status-badge--on-track { background: #1a2244; color: #5588ff; }
+:root.dark .status-badge--behind { background: #332a00; color: #ffaa33; }
+:root.dark .status-badge--critical { background: #331a1a; color: #ff6666; }
+
+:root.dark .eligibility-pill--good { background: #1a331a; color: #66cc77; }
+:root.dark .eligibility-pill--bad { background: #331a1a; color: #ff6666; }
+:root.dark .eligibility-pill--pending { background: var(--bg-alt); }
+
+/* Timeline phases dark mode */
+:root.dark .timeline-phase--release { background: #1a2244; color: #5588ff; }
+:root.dark .timeline-phase--deadline { background: #332a00; color: #ffaa33; }
+:root.dark .timeline-phase--exam { background: #331a1a; color: #ff6666; }
+
+:root.dark .milestone-chip--release { background: #1a2244; color: #5588ff; }
+:root.dark .milestone-chip--deadline { background: #332a00; color: #ffaa33; }
+:root.dark .milestone-chip--exam { background: #331a1a; color: #ff6666; }
+
+/* Grade chip dark mode */
+:root.dark .grade-chip {
+  background: #332a00;
+  color: var(--pop-yellow);
+}
+
+/* Risk panel dark mode */
+:root.dark .risk-item {
+  background: #1e1111;
+}
+
+/* Progress bar dark mode */
+:root.dark .progress-bar {
+  background: var(--bg-alt);
+  border-color: #555;
+}
+
+:root.dark .progress-ring__track {
+  stroke: #333;
+}
+
+/* Input fields dark mode */
+:root.dark input[type="number"],
+:root.dark input[type="text"],
+:root.dark textarea {
+  background: var(--bg-alt);
+  color: var(--ink);
+  border-color: #555;
+}
+
+:root.dark .deadline-action {
+  border-color: #555;
+  box-shadow: 2px 2px 0 #000;
+}
+
+:root.dark .ghost-toggle {
+  border-color: #555;
+  color: var(--ink);
+}
