@@ -364,6 +364,130 @@ const COURSE_CALCULATORS = {
       eligibility: embeddedCLabEligibility(values, { attendanceKey: params.attendanceKey }),
     }
   },
+
+  // ── Diploma/Degree calculators ──
+
+  diplomaTheoryGAA(values, params) {
+    const gaa = averageFromKeys(values, params.gaaKeys ?? []) ?? 0
+    const q1 = getScore(values, 'q1') ?? 0
+    const q2 = getScore(values, 'q2') ?? 0
+    const final = getScore(values, 'final') ?? 0
+    const gaaWeight = params.gaaWeight ?? 0.05
+    const primary = params.quizWeightsPrimary.finalWeight * final + params.quizWeightsPrimary.bestQuizWeight * Math.max(q1, q2)
+    const secondary =
+      params.quizWeightsSecondary.finalWeight * final +
+      params.quizWeightsSecondary.quiz1Weight * q1 +
+      params.quizWeightsSecondary.quiz2Weight * q2
+
+    return {
+      score: roundScore(gaaWeight * gaa + Math.max(primary, secondary)),
+      eligibility: theoryEligibility(values, params.eligibility ?? {}),
+    }
+  },
+
+  diplomaTheoryGAA10pct(values, params) {
+    const gaa = averageFromKeys(values, params.gaaKeys ?? []) ?? 0
+    const q1 = getScore(values, 'q1') ?? 0
+    const q2 = getScore(values, 'q2') ?? 0
+    const final = getScore(values, 'final') ?? 0
+    const primary = params.quizWeightsPrimary.finalWeight * final + params.quizWeightsPrimary.bestQuizWeight * Math.max(q1, q2)
+    const secondary =
+      params.quizWeightsSecondary.finalWeight * final +
+      params.quizWeightsSecondary.quiz1Weight * q1 +
+      params.quizWeightsSecondary.quiz2Weight * q2
+
+    return {
+      score: roundScore(0.1 * gaa + Math.max(primary, secondary)),
+      eligibility: theoryEligibility(values, params.eligibility ?? {}),
+    }
+  },
+
+  dspTheory(values, params) {
+    const gaa = averageFromKeys(values, params.gaaKeys ?? []) ?? 0
+    const le = averageFromKeys(values, params.labKeys ?? []) ?? 0
+    const olex = getScore(values, 'olex') ?? 0
+    const q1 = getScore(values, 'q1') ?? 0
+    const q2 = getScore(values, 'q2') ?? 0
+    const final = getScore(values, 'final') ?? 0
+    const primary = 0.55 * final + 0.15 * Math.max(q1, q2)
+    const secondary = 0.5 * final + 0.15 * q1 + 0.15 * q2
+
+    return {
+      score: roundScore(0.05 * gaa + 0.1 * le + 0.05 * olex + Math.max(primary, secondary)),
+      eligibility: theoryEligibility(values, params.eligibility ?? {}),
+    }
+  },
+
+  controlTheory(values, params) {
+    const gaa = averageFromKeys(values, params.gaaKeys ?? []) ?? 0
+    const q1 = getScore(values, 'q1') ?? 0
+    const q2 = getScore(values, 'q2') ?? 0
+    const final = getScore(values, 'final') ?? 0
+    const design = getScore(values, 'design') ?? 0
+
+    return {
+      score: roundScore(0.1 * gaa + 0.45 * final + 0.2 * q1 + 0.2 * q2 + 0.05 * design),
+      eligibility: theoryEligibility(values, params.eligibility ?? {}),
+    }
+  },
+
+  epdTheory(values, params) {
+    const gaa = averageFromKeys(values, params.gaaKeys ?? []) ?? 0
+    const q1 = getScore(values, 'q1') ?? 0
+    const q2 = getScore(values, 'q2') ?? 0
+    const final = getScore(values, 'final') ?? 0
+
+    return {
+      score: roundScore(0.3 * gaa + 0.2 * q1 + 0.2 * q2 + 0.3 * final),
+      eligibility: theoryEligibility(values, params.eligibility ?? {}),
+    }
+  },
+
+  spgTheory(values, params) {
+    const gaa = averageFromKeys(values, params.gaaKeys ?? []) ?? 0
+    const gp = getScore(values, 'gp') ?? 0
+    const q2 = getScore(values, 'q2') ?? 0
+    const final = getScore(values, 'final') ?? 0
+
+    return {
+      score: roundScore(0.15 * gaa + 0.25 * gp + 0.25 * q2 + 0.35 * final),
+      eligibility: theoryEligibility(values, {
+        ...params.eligibility,
+        quizKeys: ['q2'],
+      }),
+    }
+  },
+
+  pythonTheory(values, params) {
+    const gaa1 = averageFromKeys(values, params.gaa1Keys ?? []) ?? 0
+    const gaa2 = averageFromKeys(values, params.gaa2Keys ?? []) ?? 0
+    const q1 = getScore(values, 'q1') ?? 0
+    const pe1 = getScore(values, 'pe1') ?? 0
+    const pe2 = getScore(values, 'pe2') ?? 0
+    const final = getScore(values, 'final') ?? 0
+    const score = 0.05 * gaa1 + 0.05 * gaa2 + 0.15 * q1 + 0.45 * final +
+      0.25 * Math.max(pe1, pe2) + 0.15 * Math.min(pe1, pe2)
+
+    return {
+      score: roundScore(Math.min(score, 100)),
+      eligibility: theoryEligibility(values, params.eligibility ?? {}),
+    }
+  },
+
+  dsdLab(values, params) {
+    const weAverage = averageFromKeys(values, params.onlineKeys ?? []) ?? 0
+    const inPerson = getScore(values, params.inPersonKey) ?? 0
+
+    return {
+      score: roundScore(0.4 * weAverage + 0.6 * inPerson),
+      eligibility: electronicsLabEligibility(values, {
+        onlineKeys: params.onlineKeys,
+        inPersonKey: params.inPersonKey,
+        bestCount: params.onlineKeys?.length ?? 7,
+        ...params.eligibility,
+      }),
+    }
+  },
 }
 
 export function calculateCourse(course, rawValues, overrides = {}) {
